@@ -100,11 +100,12 @@ Both `GitHub-hosted` runners and `self-hosted` runners are supported on the foll
 - On `ubuntu` by default extensions which are available as a package can be installed. PECL extensions if not available as a package can be installed by specifying `pecl` in the tools input.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  tools: pecl
-  extensions: swoole
+- name: Setup PHP with pecl extension
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    tools: pecl
+    extensions: swoole
 ```
 
 - On `windows` PECL extensions which have the `DLL` binary can be installed.
@@ -116,30 +117,33 @@ with:
 - Specific versions of PECL extensions can be installed by suffixing the version. This is useful for installing old versions of extensions which support end of life PHP versions.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '5.4'
-  tools: pecl
-  extensions: swoole-1.9.3
+- name: Setup PHP with specific version of PECL extension
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '5.4'
+    tools: pecl
+    extensions: swoole-1.9.3
 ```
 
 - Pre-release versions of PECL extensions can be setup by suffixing the extension with its state i.e `alpha`, `beta`, `devel` or `snapshot`.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  tools: pecl
-  extensions: xdebug-beta
+- name: Setup PHP with pre-release PECL extension
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    tools: pecl
+    extensions: xdebug-beta
 ```
 
 - Shared extensions can be removed by prefixing them with a `:`.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'  
-  extensions: :opcache
+- name: Setup PHP and remove shared extension
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'  
+    extensions: :opcache
 ```
 
 - Extensions which cannot be added or removed gracefully leave an error message in the logs, the action is not interrupted.
@@ -153,29 +157,32 @@ These tools can be setup globally using the `tools` input.
 `blackfire`, `blackfire-player`, `codeception`, `composer`, `composer-normalize`, `composer-prefetcher`, `composer-require-checker`, `composer-unused`, `cs2pr`, `deployer`, `flex`, `grpc_php_plugin`, `infection`, `pecl`, `phan`, `phinx`, `phive`, `phpcbf`, `phpcpd`, `php-config`, `php-cs-fixer`, `phpcs`, `phpize`, `phpmd`, `phpstan`, `phpunit`, `prestissimo`, `protoc`, `psalm`, `symfony`, `vapor-cli`
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  tools: php-cs-fixer, phpunit
+- name: Setup PHP with tools
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    tools: php-cs-fixer, phpunit
 ```
 
 To setup a particular version of a tool, specify it in the form `tool:version`.  
 Latest stable version of `composer` is setup by default. You can setup the required version by specifying `v1`, `v2`, `snapshot` or `preview` as version.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  tools: composer:v2
+- name: Setup PHP with composer v2
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    tools: composer:v2
 ```
 
 Version for other tools should be in `semver` format and a valid release of the tool.
 
-```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  tools: php-cs-fixer:2.16.2, phpunit:8.5.1
+```
+- name: Setup PHP with tools
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    tools: php-cs-fixer:2.16.2, phpunit:8.5.1
 ```
 
 **Notes**
@@ -191,10 +198,11 @@ Specify `coverage: xdebug` to use `Xdebug`.
 Runs on all [PHP versions supported](#tada-php-support "List of PHP versions supported on this GitHub Action").
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  coverage: xdebug
+- name: Setup PHP with Xdebug
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    coverage: xdebug
 ```
 
 ### PCOV
@@ -205,11 +213,23 @@ Tests with `PCOV` run much faster than with `Xdebug`.
 If your source code directory is other than `src`, `lib` or, `app`, specify `pcov.directory` using the `ini-values` input.  
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  ini-values: pcov.directory=api #optional, see above for usage.
-  coverage: pcov
+- name: Setup PHP with PCOV
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    ini-values: pcov.directory=api #optional, see above for usage.
+    coverage: pcov
+```
+
+`PHPUnit` 8 and above supports `PCOV` out of the box.  
+If you are using `PHPUnit` 5, 6 or 7, you will need `krakjoe/pcov-clobber`.  
+Before executing your tests add the following step.
+
+```yaml
+- name: Setup PCOV
+  run: |
+    composer require pcov/clobber
+    vendor/bin/pcov clobber
 ```
 
 ### Disable Coverage
@@ -223,10 +243,11 @@ Consider disabling the coverage using this PHP action for these reasons.
 - You are profiling your code using `blackfire`.
 
 ```yaml
-uses: shivammathur/setup-php@v2
-with:
-  php-version: '7.4'
-  coverage: none
+- name: Setup PHP with no coverage driver
+  uses: shivammathur/setup-php@v2
+  with:
+    php-version: '7.4'
+    coverage: none
 ```
 
 ## :memo: Usage
@@ -326,7 +347,7 @@ steps:
 - name: Checkout
   uses: actions/checkout@v2
 
-- name: Setup PHP
+- name: Setup nightly PHP
   uses: shivammathur/setup-php@v2
   with:
     php-version: '8.0'
@@ -438,7 +459,7 @@ jobs:
 - You can specify the `update` environment variable to `true` to force update to the latest release.
 
 ```yaml
-- name: Setup PHP
+- name: Setup PHP with latest versions
   uses: shivammathur/setup-php@v2
   with:
     php-version: '7.4'
@@ -453,7 +474,7 @@ jobs:
 To debug any issues, you can use the `verbose` tag instead of `v2`.
 
 ```yaml
-- name: Setup PHP
+- name: Setup PHP with logs
   uses: shivammathur/setup-php@verbose
   with:
     php-version: '7.4'
